@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Пример секундомера</title>
+  <style>
+    #timer {
+      font-size: 3rem;
+      text-align: center;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+<body>
+  <div id="timer">00:00:00</div>
+  <button id="startStopButton">Старт/Стоп</button>
+
+  <script>
+    var startTime, timerInterval, elapsedMs = 0;
+    var timerDisplay = document.getElementById("timer");
+    var startStopButton = document.getElementById("startStopButton");
+
+    function startTimer() {
+      startTime = Date.now() - elapsedMs;
+      timerInterval = setInterval(updateTimer, 10);
+      startStopButton.innerText = "Стоп";
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      elapsedMs = Date.now() - startTime;
+      startStopButton.innerText = "Старт";
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      elapsedMs = 0;
+      timerDisplay.innerText = "00:00:00";
+      startStopButton.innerText = "Старт";
+    }
+
+    function updateTimer() {
+      var elapsed = Date.now() - startTime;
+      var hours = Math.floor(elapsed / 3600000);
+      var minutes = Math.floor((elapsed % 3600000) / 60000);
+      var seconds = Math.floor((elapsed % 60000) / 1000);
+      var milliseconds = elapsed % 1000;
+
+      var timeString = ("0" + hours).slice(-2) + ":" +
+                       ("0" + minutes).slice(-2) + ":" +
+                       ("0" + seconds).slice(-2) + "." +
+                       ("00" + milliseconds).slice(-3);
+
+      timerDisplay.innerText = timeString;
+    }
+
+    document.addEventListener("keydown", function(event) {
+      if (event.code === "Space") {
+        if (timerInterval) {
+          stopTimer();
+        } else {
+          startTimer();
+        }
+      } else if (event.code === "Escape") {
+        resetTimer();
+        location.reload();
+      }
+    });
+
+    // Добавляем показ точного времени
+    var clockDisplay = document.createElement("div");
+    clockDisplay.style.position = "fixed";
+    clockDisplay.style.top = "10px";
+    clockDisplay.style.right = "10px";
+    clockDisplay.style.fontSize = "2rem";
+    clockDisplay.style.fontFamily = "monospace";
+    document.body.appendChild(clockDisplay);
+
+    function updateClock() {
+      var now = new Date();
+      var hours = now.getUTCHours() + 5;
+      var minutes = now.getUTCMinutes();
+      var seconds = now.getUTCSeconds();
+
+      var timeString = ("0" + hours).slice(-2) + ":" +
+                       ("0" + minutes).slice(-2) + ":" +
+                       ("0" + seconds).slice(-2);
+
+      clockDisplay.innerText = "Ташкент: " + timeString;
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+  </script>
+</body>
+</html>
